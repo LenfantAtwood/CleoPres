@@ -8,3 +8,16 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+// // next.config.js
+// module.exports = {
+//   images: {
+//     remotePatterns: [
+//       {
+//         protocol: 'https',
+//         hostname: 'your-domain.com',
+//         pathname: '/images/**',
+//       },
+//     ],
+//   },
+// };
