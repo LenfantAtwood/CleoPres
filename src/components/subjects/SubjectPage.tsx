@@ -14,21 +14,23 @@ const SubjectPage = ({ subjectid, studentid }: SubjectPageProps) => {
   useEffect(() => {
     console.log("Props received:", { subjectid, studentid });
     if (!subjectid || !studentid) {
-      setError("Missing subjectid or studentid");
+      setError("Missing subject ID or student ID");
       setLoading(false);
       return;
     }
 
     const fetchSubject = async () => {
-      const url = `/api/subjects/${subjectid}?studentid=${studentid}`;
+      const url = `/api/subjects/?studentid=${studentid}&subjectid=${subjectid}`;
       console.log("Fetching:", url);
+
       try {
         const response = await fetch(url);
         const text = await response.text(); // Get raw response for debugging
         console.log("Response status:", response.status, "Body:", text);
 
         if (!response.ok) {
-          throw new Error(`Fetch failed: ${response.status} - ${text}`);
+          const errorData = JSON.parse(text);
+          throw new Error(errorData.error || `Fetch failed: ${response.status}`);
         }
 
         const data = JSON.parse(text); // Parse JSON manually for clarity
@@ -44,9 +46,10 @@ const SubjectPage = ({ subjectid, studentid }: SubjectPageProps) => {
   }, [subjectid, studentid]);
 
   if (loading) return <div>Loading...</div>;
-  if (error || !subject) return <div>Error: {error || "Subject not found"}</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!subject) return <div>Subject not found</div>;
 
   return <div>Subject: {subject.name || subject.subjectid}</div>;
 };
-// Removed redundant useEffect block as it duplicates functionality already present in the component.
+
 export default SubjectPage;

@@ -42,6 +42,7 @@ interface HomeProps {
   studentid: string; // Renamed for clarity
   setStudentid: (studentid: string) => void;
   onLoginSuccess: () => void;
+  setSubjectid: (subjectid: string) => void;
 }
 
 
@@ -91,6 +92,7 @@ export function Home({
   studentid,
   setStudentid,
   onLoginSuccess,
+  setSubjectid,
 }: HomeProps): JSX.Element {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [isGifPlaying, setIsGifPlaying] = useState<boolean>(true);
@@ -122,6 +124,7 @@ export function Home({
 
       const data = await response.json();
       console.log("Login successful:", data);
+      setSubjectid(data.subjectid);
       setSubmitted(true);
       onLoginSuccess();
     } catch (err) {
@@ -228,6 +231,7 @@ export default function CarouselDemo(): JSX.Element {
   const [formsData, setFormsData] = useState<Record<string, any>>({});
   const [name, setName] = useState<string>("");
   const [studentid, setStudentid] = useState<string>(""); // Renamed for consistency
+  const [subjectid, setSubjectid] = useState<string>(""); // Renamed for consistency
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const handleFormChange = (formId: string, data: FormData) => {
@@ -272,8 +276,9 @@ export default function CarouselDemo(): JSX.Element {
 
     <WelcomePage key="welcome" />,
 
-    // <SubjectPage key="subject" studentid={studentid} subjectid="pres1" />,
-    <SubjectPage subjectid="pres1" studentid={studentid} />,
+  
+    // <SubjectPage subjectid="pres1" studentid={studentid} />, # Errors at here
+    <SubjectPage subjectid={subjectid} studentid={studentid} />,
 
 
 
@@ -318,6 +323,7 @@ export default function CarouselDemo(): JSX.Element {
           studentid={studentid}
           setStudentid={setStudentid}
           onLoginSuccess={() => setIsLoggedIn(true)}
+          setSubjectid={setSubjectid}
         />
       ) : (
         <Carousel className="w-full">

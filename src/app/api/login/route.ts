@@ -33,6 +33,9 @@ export async function POST(req: NextRequest) {
       .eq('studentname', name)
       .single();
 
+      // get subjectid from studentData
+      const subjectid = studentData?.subjectid;
+
     // failed case, that is error not null, return unauthorized
     if (studentError) {
       return NextResponse.json(
@@ -41,10 +44,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // return NextResponse.json(
+    //   { message: "Authorized" },
+    //   { status: 200 }
+    // );
+// when calling will fetch this
+    // console.log("Login successful:", data);
+    //   setSubjectid(data.subjectid);
+
+    // new return with subjectid
     return NextResponse.json(
-      { message: "Authorized" },
+      { message: "Authorized", subjectid: subjectid },
       { status: 200 }
     );
+   
 
   }
   catch (error) {
