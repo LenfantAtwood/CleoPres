@@ -1,5 +1,5 @@
-import { unauthorized } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
+import { supabase } from '@/utils/supabaseClient';
 
 interface FormData {
   studentNumber: string;
@@ -7,64 +7,68 @@ interface FormData {
   [key: string]: any;
 }
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-
-export const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(req: NextRequest) {
-// here only checks if the user is authorized, so return either 401 or 200
   try {
     // Parse request body
     const formData: FormData = await req.json();
-    const { studentNumber } = formData;
-    const { name } = formData;
+    const { studentNumber, name } = formData;
 
     // Step 0: Validation
-    // if failed return 200 with error message
-    // do not care about studentID
-    // Step 1: Check if student number exists in student table
+    if (!studentNumber || !name) {
+      return NextResponse.json(
+        { error: "Missing student number or name" },
+        { status: 400 }
+      );
+    }
+
+    // Step 1: Check if student number and name exist in the student table
     const { data: studentData, error: studentError } = await supabase
       .from('student')
-      .select('studentid')
+      .select('subjectid, studentid, studentname')
       .eq('studentid', studentNumber)
       .eq('studentname', name)
       .single();
 
-      // get subjectid from studentData
-      const subjectid = studentData?.subjectid;
-
-    // failed case, that is error not null, return unauthorized
-    if (studentError) {
+    // Handle query errors or no matching student
+    if (studentError || !studentData) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    // return NextResponse.json(
-    //   { message: "Authorized" },
-    //   { status: 200 }
-    // );
-// when calling will fetch this
-    // console.log("Login successful:", data);
-    //   setSubjectid(data.subjectid);
+    // Extract subjectid from studentData
+    const { subjectid } = studentData;
 
-    // new return with subjectid
+    // Return success response with subjectid
     return NextResponse.json(
-      { message: "Authorized", subjectid: subjectid },
+      { message: "Authorized", subjectid },
       { status: 200 }
     );
-   
 
-  }
-  catch (error) {
+  } catch (error) {
+    // Log and handle unexpected errors
+    console.error('Unexpected error:', error);
     return NextResponse.json(
-      { error: `Internal server error: ${error.message}` },
+      { error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
-
 }
+
+
+// -----------------------------------------------------------------------------------
+// Manual Test
+//       File loc: CleoPres/src/app/api/login/route.ts
+// -----------------------------------------------------------------------------------
+// now do unit test manually using curl
+// data_will_fail = {"studentNumber": "123456", "name": "John Doe"}
+// data_will_pass = {"studentNumber": "dc32734", "name": "Hong Ziyan"}
+// data_missing_student_number = {"name": "John Doe"}
+// data_missing_name = {"studentNumber": "123456"}
+// curl -X POST -H "Content-Type: application/json" -d '{"studentNumber": "123456", "name": "John Doe"}' http://localhost:3000/api/login
+// curl -X POST -H "Content-Type: application/json" -d '{"studentNumber": "dc32734", "name": "Hong Ziyan"}' http://localhost:3000/api/login
+// curl -X POST -H "Content-Type: application/json" -d '{"name": "John Doe"}' http://localhost:3000/api/login
+// curl -X POST -H "Content-Type: application/json" -d '{"studentNumber": "123456"}' http://localhost:3000/api/login
+// -----------------------------------------------------------------------------------
