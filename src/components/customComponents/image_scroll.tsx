@@ -23,6 +23,7 @@ const PageS: React.FC<PageSProps> = ({ onChange }) => {
     "/images/16_sub.png",
     "/images/32_sub.png",
     "/images/38_sub.png",
+    "/images/1040_no.png",
   ];
 
   const handleImageSelect = (image: string) => {
