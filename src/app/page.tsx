@@ -14,9 +14,11 @@ import Page3 from "@/components/customComponents/page3";
 import Page4 from "@/components/customComponents/page4";
 import Page5 from "@/components/customComponents/page5";
 import Page6 from "@/components/customComponents/page6";
+import Page7 from "@/components/customComponents/page7";
 import PageS from "@/components/customComponents/image_scroll";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import dynamic from 'next/dynamic';
 
 interface FormData {
   [key: string]: any;
@@ -25,6 +27,11 @@ interface FormData {
 interface SubmitButtonProps {
   onClick: () => void;
 }
+
+const SubjectPage = dynamic(() => import('@/pages/subjects/[subjectID]'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+});
 
 export function SubmitButton({ onClick }: SubmitButtonProps): JSX.Element {
   return (
@@ -52,6 +59,7 @@ export function Home({
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [isGifPlaying, setIsGifPlaying] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [currentSubject, setCurrentSubject] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -243,21 +251,32 @@ export default function CarouselDemo(): JSX.Element {
 
   const carouselItems: JSX.Element[] = [
     // add a welcome page
-    <div>
-      <div className="flex flex-col items-center justify-center w-full h-full p-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl shadow-lg border border-purple-100">
-        <h1 className="text-3xl font-bold text-purple-900 w-full h-full">Welcome to the Ideal President App!</h1>
-        <p className="mt-4 text-lg text-gray-600">
-          Please fill out the form to vote for your favorite president.
-        </p>
-      </div>
+    <div className="flex flex-col items-center justify-center w-full h-full min-h-screen p-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl shadow-lg border border-purple-100">
+    <h1 className="text-4xl font-extrabold text-purple-900 mb-4">
+      Welcome to the Ideal President App!
+    </h1>
+    <p className="text-xl text-gray-700">
+      Please fill out the form to vote for your favorite president.
+    </p>
+
+    <p className="text-xl text-gray-700">
+      Part I: See the list of presidents and answer the question.
+    </p>
+
+    <p className="text-xl text-gray-700">
+      Part II: Select one president among all the president you have seen.
+    </p>
     </div>,
+    <SubjectPage key="subject" />,
     <Page1 key="page1" onChange={(data: FormData) => handleFormChange("page1", data)} />,
     <Page2 key="page2" onChange={(data: FormData) => handleFormChange("page2", data)} />,
     <Page3 key="page3" onChange={(data: FormData) => handleFormChange("page3", data)} />,
     <Page4 key="page4" onChange={(data: FormData) => handleFormChange("page4", data)} />,
     <Page5 key="page5" onChange={(data: FormData) => handleFormChange("page5", data)} />,
     <Page6 key="page6" onChange={(data: FormData) => handleFormChange("page6", data)} />,
+    <Page7 key="page7" onChange={(data: FormData) => handleFormChange("page7", data)} />,
     <PageS key="pageS" onChange={(data: FormData) => handleFormChange("pageS", data)} />,
+
     <div 
       className="flex flex-col items-center justify-center w-min-[100%] min-h-[100%] w-full h-full p-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl shadow-lg border border-purple-100"
       key="submit-button"

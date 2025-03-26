@@ -1,5 +1,7 @@
 import { unauthorized } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
+import { Pool } from 'pg';
+
 
 interface FormData {
   studentID: string;
@@ -13,22 +15,30 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 export async function POST(req: NextRequest) {
   try {
     // Parse request body
     const formData: FormData = await req.json();
     const { studentID } = formData;
+    const { subjectID } = formData;
 
     // Step 0: Validation
     // if failed return 200 with error message
     // do not care about studentID
-    
+    const result = await pool.query(
+      'SELECT subjectid FROM student WHERE subjectid = $1',
+      [subjectID]
+    );
 
     // Step 1: Check if student number exists in student table
     const { data: studentData, error: studentError } = await supabase
       .from('student')
       .select('studentid')
       .eq('studentid', studentID)
+      .eq('subjectid', subjectID)
       .single();
 
       // failed case, that is error not null, return unauthorized
