@@ -64,8 +64,8 @@ export async function GET(request: NextRequest) {
 // Manual Test
 //   Path: /workspaces/codespaces-blank/CleoPres/src/app/api/subjects/route.ts
 // -----------------------------------------------------------------------------------
-// data_will_fail = {"studentid": "123456"}
 // data_will_pass = {"studentid": "dc32734"}
+// data_will_fail = {"studentid": "123456"}
 // data_missing_student_id = {"name": "John Doe"}
 // curl -X GET http://localhost:3000/api/subjects?studentid=dc32734
 // curl -X GET http://localhost:3000/api/subjects?studentid=123456
