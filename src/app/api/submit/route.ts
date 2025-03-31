@@ -36,26 +36,26 @@ export async function POST(req: NextRequest) {
     }
 
     // Step 2: Check if user has already submitted
-    const { data: submissionData, error: submissionError } = await supabase
-      .from('submissions')
-      .select('id')
-      .eq('studentid', studentid)
-      .single();
+    // const { data: submissionData, error: submissionError } = await supabase
+    //   .from('submissions')
+    //   .select('id')
+    //   .eq('studentid', studentid)
+    //   .single();
 
-    if (submissionError) {
-      console.error('Error querying submissions:', submissionError);
-      return NextResponse.json(
-        { error: "Internal server error" },
-        { status: 500 }
-      );
-    }
+    // if (submissionError) {
+    //   console.error('Error querying submissions:', submissionError, submissionData);
+    //   return NextResponse.json(
+    //     { error: "Internal server error" },
+    //     { status: 500 }
+    //   );
+    // }
 
-    if (submissionData) {
-      return NextResponse.json(
-        { error: "You have already submitted" },
-        { status: 409 } // Conflict status code
-      );
-    }
+    // if (submissionData) {
+    //   return NextResponse.json(
+    //     { error: "You have already submitted" },
+    //     { status: 409 } // Conflict status code
+    //   );
+    // }
 
     // Step 3: Insert submission data
     const { error: insertError } = await supabase
