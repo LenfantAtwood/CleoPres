@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from '@/utils/supabaseClient';
 
+
+
 interface FormData {
   studentid: string;
   [key: string]: any;
@@ -20,12 +22,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    
+
     // Step 1: Check if student number exists in student table
     const { data: studentData, error: studentError } = await supabase
       .from('student')
       .select('studentid')
       .eq('studentid', studentid)
       .single();
+
+    
 
     if (studentError || !studentData) {
       console.error('Student not found or error querying student:', studentError);
@@ -56,6 +62,8 @@ export async function POST(req: NextRequest) {
     //     { status: 409 } // Conflict status code
     //   );
     // }
+
+    
 
     // Step 3: Insert submission data
     const { error: insertError } = await supabase

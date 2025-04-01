@@ -15,15 +15,10 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+
 
 import { useState, useEffect } from "react";
 
@@ -33,9 +28,10 @@ interface CustomFormData {
 
 interface Page1Props {
   onChange: (data: CustomFormData) => void;
+  subjectid: string;
 }
 
-const Page1: React.FC<Page1Props> = ({ onChange }) => {
+const Page1: React.FC<Page1Props> = ({ onChange, subjectid}) => {
   const [formData, setFormData] = useState<CustomFormData>({} as CustomFormData);
 
 
@@ -64,18 +60,26 @@ const Page1: React.FC<Page1Props> = ({ onChange }) => {
   }
   , []);
 
+  // const img_path = "/images/2_sub.png";
+  const img_path = `/images/${subjectid}_image.png`;
+  console.log("img_path", img_path);
+
+
   return (
     <div className="flex items-center justify-center w-full h-min-[90%]">
-      <Card className="w-full">
+      <Card className="w-full max-w-4xl">
         <CardHeader>
-          <CardTitle>2</CardTitle>
+          <CardTitle>Part I</CardTitle>
+          <CardDescription>Answer the following questions</CardDescription>
         </CardHeader>
+        
         <CardContent>
           <form>
             <div className="grid w-full items-center gap-4">
               <div className="w-full max-w-[30%] mx-auto rounded-md">
                 <AspectRatio ratio={1 / 1}>
-                  <Image src="/images/2_sub.png" alt="Image" fill className="rounded-md object-cover object-center" />
+                  <Image src={img_path}
+                   alt="Image" fill className="rounded-md object-cover object-center" />
                 </AspectRatio>
               </div>
 
@@ -137,7 +141,10 @@ const Page1: React.FC<Page1Props> = ({ onChange }) => {
             </div>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-between"></CardFooter>
+        {/* <CardFooter className="flex justify-between"></CardFooter> */}
+        <CardFooter className="flex justify-between">
+          <Button>1</Button>
+        </CardFooter>
       </Card>
     </div>
   );

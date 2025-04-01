@@ -1,44 +1,76 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+
+interface Subject {
+  subjectid: string;
+}
+
+interface CustomFormData {
+  [key: string]: any;
+}
+
+interface Page {
+  id: number;
+  title: string;
+  imageType: string;
+  description: string;
+}
 
 interface SubjectPageProps {
   subjectid: string;
   studentid: string;
+  onChange: (data: CustomFormData) => void;
 }
 
-const SubjectPage = ({ subjectid, studentid }: SubjectPageProps) => {
+
+const SubjectPage = ({ subjectid, studentid, onChange }: SubjectPageProps) => {
   const [subject, setSubject] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [formData, setFormData] = useState<CustomFormData>({} as CustomFormData);
+  // In parent component
+
 
   useEffect(() => {
-    console.log("Props received:", { subjectid, studentid });
+    console.log("SubjectPage props:", { subjectid, studentid }); // Log props
     if (!subjectid || !studentid) {
-      setError("Missing subject ID or student ID");
+      setError("Missing subjectid or studentid");
       setLoading(false);
       return;
     }
 
     const fetchSubject = async () => {
+      
       const url = `/api/subjects/?studentid=${studentid}&subjectid=${subjectid}`;
-      console.log("Fetching:", url);
-
+      console.log("Fetching:", url); // Log URL
+        
+      
       try {
         const response = await fetch(url);
-        const text = await response.text(); // Get raw response for debugging
-        console.log("Response status:", response.status, "Body:", text);
+        const text = await response.text();
+        console.log("Fetch response status:", response.status); // Log status
 
         if (!response.ok) {
-          const errorData = JSON.parse(text);
-          throw new Error(errorData.error || `Fetch failed: ${response.status}`);
+          const errorData = await response.text();
+          throw new Error(errorData || `Fetch failed: ${response.status}`);
+
         }
 
-        const data = JSON.parse(text); // Parse JSON manually for clarity
+        const data = JSON.parse(text);
+        // console.log("Fetched data:", data); // Log response data
         setSubject(data);
       } catch (err) {
+        console.error("Fetch error:", err); // Log error details
         setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
-        setLoading(false);
+        setLoading(false); // Ensure loading is always set to false
       }
     };
 
@@ -46,10 +78,159 @@ const SubjectPage = ({ subjectid, studentid }: SubjectPageProps) => {
   }, [subjectid, studentid]);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!subject) return <div>Subject not found</div>;
+  if (error || !subject) return <div>Error: {error || "Subject not found"}</div>;
 
-  return <div>Subject: {subject.name || subject.subjectid}</div>;
+
+  // Remove duplicate loading/error checks (keep only one set)
+  if (loading) return <div>Loading...</div>;
+  if (error || !subject) return <div>Error: {error || "Subject not found"}</div>;// Add onChange to dependency array since it's used inside
+
+  const getImagePath = (type: string): string => {
+    return `/images/${subjectid}_${type}.png`;
+
+  };
+
+  const groupImagePath = (type: string): string => {
+    return `/images/${type}_sub.png`;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const updatedFormData = { ...formData, [name]: value };
+    setFormData(updatedFormData);
+    onChange(updatedFormData);
+  };
+
+  const handleSliderChange = (name: string, value: number[]) => {
+    const updatedFormData = { ...formData, [name]: value[0] };
+    setFormData(updatedFormData);
+    onChange(updatedFormData);
+  };
+
+  const pages: Page[] = [
+    { id: 1, title: "1", imageType: "image", description: "First image" },
+    { id: 2, title: "2", imageType: "no", description: "Second image" },
+    { id: 3, title: "3", imageType: "rand", description: "Third image" },
+    { id: 4, title: "4", imageType: "8", description: "Fourth image" },
+    { id: 5, title: "5", imageType: "10", description: "Fifth image" },
+    { id: 6, title: "6", imageType: "24", description: "Sixth image" },
+    { id: 7, title: "7", imageType: "38", description: "Seventh image" },
+    { id: 8, title: "8", imageType: "no", description: "Eighth image" },   
+  ];
+
+  return (
+    <div className="flex items-center justify-center w-full min-h-[90vh]">
+      <Card className="w-full max-w-4xl">
+        <CardContent className="pt-6">
+          <div className="grid w-full items-center gap-4">
+            <h1 className="text-xl font-bold mb-4">Part I</h1>
+            <h2 className="text-xl mb-4">Please answer the following questions.</h2>
+            <div className="flex space-x-4 mb-6">
+              {pages.map(page => (
+          <button
+            key={page.id}
+            onClick={() => setCurrentPage(page.id)}
+            className={`px-4 py-2 rounded ${
+              currentPage === page.id ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            {page.title}
+          </button>
+              ))}
+            </div>
+            {pages.map(page => (
+              currentPage === page.id && (
+          <div key={page.id}>
+            <div className="w-full max-w-[30%] mx-auto rounded-md">
+              <AspectRatio ratio={1 / 1}>
+                <Image
+                src={page.id <= 3 ? getImagePath(page.imageType) : groupImagePath(page.imageType)}
+                alt={`${page.title} image`}
+                fill
+                className="rounded-md object-cover object-center"
+                />
+              </AspectRatio>
+            </div>
+            <div className="flex flex-col space-y-10 mt-8">
+              <div className="flex flex-col space-y-5">
+                <Label htmlFor="Question1">Question 1</Label>
+                <p>Would you vote for this person as the president?</p>
+                <div className="flex space-x-4">
+            <Label htmlFor="Question1AnswerYes" className="flex items-center space-x-2">
+              <Input
+                type="radio"
+                id="Question1AnswerYes"
+                name="Question1"
+                value="yes"
+                onChange={handleInputChange}
+              />
+              <span>Yes</span>
+            </Label>
+            <Label htmlFor="Question1AnswerNo" className="flex items-center space-x-2">
+              <Input
+                type="radio"
+                id="Question1AnswerNo"
+                name="Question1"
+                value="no"
+                onChange={handleInputChange}
+              />
+              <span>No</span>
+            </Label>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-5">
+                <Label htmlFor="Question2">Question 2</Label>
+                <p>How competent do you think this president is?</p>
+                <Slider
+            defaultValue={[2]}
+            max={4}
+            step={1}
+            id="Question2"
+            onValueChange={(value: number[]) => handleSliderChange("Question2", value)}
+                />
+                <div className="flex justify-between text-xs px-2">
+            <span>Not competent</span>
+            <span>A little</span>
+            <span>Neutral</span>
+            <span>Competent</span>
+            <span>Very Competent</span>
+                </div>
+              </div>
+              <div className="flex flex-col space-y-5">
+                <Label htmlFor="Question3">Question 3</Label>
+                <p>How likeable do you think this president is?</p>
+                <Slider defaultValue={[2]} max={4} step={1} id="Question3" onValueChange={(value) => handleSliderChange("Question3", value)} />
+                <div className="flex justify-between text-xs px-2">
+            <span>Not likable</span>
+            <span>A little</span>
+            <span>Neutral</span>
+            <span>Lovely</span>
+            <span>Very likable</span>
+                </div>
+              </div>
+          
+              <div className="flex flex-col space-y-5">
+                <Label htmlFor="Question4">Question 4</Label>
+                <p>How trustworthy do you think this president is?</p>
+                <Slider defaultValue={[2]} max={4} step={1} id="Question4" onValueChange={(value) => handleSliderChange("Question4", value)} />
+                <div className="flex justify-between text-xs px-2">
+            <span>Not trustworthy</span>
+            <span>A little</span>
+            <span>Neutral</span>
+            <span>Trustworthy</span>
+            <span>Very trustworthy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+              )
+            ))}
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between"></CardFooter>
+      </Card>
+    </div>
+  );
 };
 
 export default SubjectPage;

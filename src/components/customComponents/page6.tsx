@@ -1,3 +1,4 @@
+<span>Very trustworthy</span>
 
 import Image from "next/image"
 import { Slider } from "@/components/ui/slider"
@@ -15,15 +16,10 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
+
 
 import { useState, useEffect } from "react";
 
@@ -33,10 +29,13 @@ interface CustomFormData {
 
 interface Page6Props {
   onChange: (data: CustomFormData) => void;
+  subjectid: string;
 }
 
-const Page6: React.FC<Page6Props> = ({ onChange }) => {
+const Page6: React.FC<Page6Props> = ({ onChange, subjectid}) => {
   const [formData, setFormData] = useState<CustomFormData>({} as CustomFormData);
+  const [isFormValid, setIsFormValid] = useState<boolean>(false); // State to track form validity
+  
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,18 +63,47 @@ const Page6: React.FC<Page6Props> = ({ onChange }) => {
   }
   , []);
 
+  // // Validate the form whenever formData changes
+  // useEffect(() => {
+  //   const isValid =
+  //     formData.Question1 === "yes" || formData.Question1 === "no" && // Ensure Question1 is answered
+  //     formData.Question2 !== undefined &&
+  //     formData.Question3 !== undefined &&
+  //     formData.Question4 !== undefined;
+
+  //   setIsFormValid(isValid);
+  // }, [formData]);
+
+  // const handleSubmit = () => {
+  //   if (!isFormValid) {
+  //     alert("Please answer all the questions before proceeding.");
+  //     return;
+  //   }
+  //   console.log("Form submitted successfully:", formData);
+  //   // Add logic to proceed to the next step
+  // };
+
+
+  // const img_path = "/images/2_sub.png";
+  const img_path = `/images/24_sub.png`;
+  console.log("img_path", img_path);
+
+
   return (
     <div className="flex items-center justify-center w-full h-min-[90%]">
-      <Card className="w-full">
+      <Card className="w-full max-w-4xl">
         <CardHeader>
-          <CardTitle>38</CardTitle>
+          <CardTitle>Part I</CardTitle>
+          <CardDescription>Answer the following questions</CardDescription>
         </CardHeader>
+        
         <CardContent>
           <form>
             <div className="grid w-full items-center gap-4">
               <div className="w-full max-w-[30%] mx-auto rounded-md">
                 <AspectRatio ratio={1 / 1}>
-                  <Image src="/images/38_sub.png" alt="Image" fill className="rounded-md object-cover object-center" />
+                  <Image src={img_path}
+                   alt="Image" fill className="rounded-md object-cover object-center" />
                 </AspectRatio>
               </div>
 
@@ -137,13 +165,13 @@ const Page6: React.FC<Page6Props> = ({ onChange }) => {
             </div>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-between"></CardFooter>
+        {/* <CardFooter className="flex justify-between"></CardFooter> */}
+        <CardFooter className="flex justify-between">
+          <Button>6</Button>
+        </CardFooter>
       </Card>
     </div>
   );
 };
 
 export default Page6;
-
-
-
