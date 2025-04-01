@@ -1,5 +1,7 @@
 "use client";
-import * as React from "react";
+// import * as React from "react";
+import React from "react"; // Add this import to provide the JSX namespace
+
 import { useState, FormEvent, ChangeEvent } from "react";
 import {
   Carousel,
@@ -31,8 +33,7 @@ interface FormData {
 interface SubmitButtonProps {
   onClick: () => void;
 }
-
-export function SubmitButton({ onClick }: SubmitButtonProps): JSX.Element {
+ function SubmitButton({ onClick }: SubmitButtonProps) {
   return (
     <Button className="w-full max-w-[200px]" onClick={onClick}>
       Submit
@@ -96,7 +97,7 @@ const SubmitPage: React.FC<{ handleSubmit: () => void }> = ({ handleSubmit }) =>
 
 
 
-export default function CarouselDemo(): JSX.Element {
+export default function CarouselDemo() {
   const [formsData, setFormsData] = useState<Record<string, any>>({});
   const [name, setName] = useState<string>("");
   const [studentid, setStudentid] = useState<string>(""); // Renamed for consistency
@@ -141,21 +142,21 @@ export default function CarouselDemo(): JSX.Element {
     }
   };
 
-  const carouselItems: JSX.Element[] = [
+  const carouselItems = [
 
     <WelcomePage key="welcome" />,
 
   
     // <SubjectPage subjectid="pres1" studentid={studentid} />, # Errors at here
     // <SubjectPage key="SubjectPage" onChange={(data: FormData) => handleFormChange("SubjectPage", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page1 key="Page1" onChange={(data: FormData) => handleFormChange("Page1", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page2 key="Page2" onChange={(data: FormData) => handleFormChange("Page2", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page3 key="Page3" onChange={(data: FormData) => handleFormChange("Page3", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page4 key="Page4" onChange={(data: FormData) => handleFormChange("Page4", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page5 key="Page5" onChange={(data: FormData) => handleFormChange("Page5", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page6 key="Page6" onChange={(data: FormData) => handleFormChange("Page6", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page7 key="Page7" onChange={(data: FormData) => handleFormChange("Page7", data)} subjectid={subjectid} studentid={studentid} />,
-    <Page8 key="Page8" onChange={(data: FormData) => handleFormChange("Page8", data)} subjectid={subjectid} studentid={studentid} />,
+    <Page1 key="Page1" onChange={(data: FormData) => handleFormChange("Page1", data)} subjectid={subjectid} />,
+    <Page2 key="Page2" onChange={(data: FormData) => handleFormChange("Page2", data)} subjectid={subjectid} />,
+    <Page3 key="Page3" onChange={(data: FormData) => handleFormChange("Page3", data)} subjectid={subjectid} />,
+    <Page4 key="Page4" onChange={(data: FormData) => handleFormChange("Page4", data)} subjectid={subjectid} />,
+    <Page5 key="Page5" onChange={(data: FormData) => handleFormChange("Page5", data)} subjectid={subjectid} />,
+    <Page6 key="Page6" onChange={(data: FormData) => handleFormChange("Page6", data)} subjectid={subjectid} />,
+    <Page7 key="Page7" onChange={(data: FormData) => handleFormChange("Page7", data)} subjectid={subjectid} />,
+    <Page8 key="Page8" onChange={(data: FormData) => handleFormChange("Page8", data)} subjectid={subjectid} />,
 
     <SubjectSelect key="SubjectSelect" onChange={(data: FormData) => handleFormChange("SubjectSelect", data)} subjectid={subjectid} studentid={studentid} />,
 

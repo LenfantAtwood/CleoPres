@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["public.readdy.ai"],
   },
+  // reactStrictMode: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;

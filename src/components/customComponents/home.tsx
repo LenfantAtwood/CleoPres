@@ -3,6 +3,15 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
 
+// HomeProps
+interface HomeProps {
+  name: string;
+  setName: (name: string) => void;
+  studentid: string; // Renamed for clarity
+  setStudentid: (studentid: string) => void;
+  onLoginSuccess: () => void;
+  setSubjectid: (subjectid: string) => void;
+}
 export function Home({
   name,
   setName,
@@ -10,7 +19,7 @@ export function Home({
   setStudentid,
   onLoginSuccess,
   setSubjectid,
-}: HomeProps): JSX.Element {
+}: HomeProps) {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [isGifPlaying, setIsGifPlaying] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
