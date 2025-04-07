@@ -70,7 +70,7 @@ const WelcomePage: React.FC<{ goToNextPage: () => void }> = ({ goToNextPage }) =
 //         </p>
 //         <SubmitButton onClick={handleSubmit} />
 //       </div>
-//     </div>
+//     </div> 
 //   );
 // };
 
@@ -191,19 +191,15 @@ export default function App() {
         />
       ) : (
         <div className="w-full">
+          {/* Progress Bar */}
+        <div className="w-full bg-gray-200 h-4 rounded-full mb-6">
+          <div
+            className="bg-blue-500 h-4 rounded-full transition-all duration-300"
+            style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
+          ></div>
+        </div>
+          
           {pageComponents[currentPage]()}
-          {/* <div className="flex justify-between mt-4">
-            {currentPage > 0 && (
-              <Button onClick={goToPreviousPage} className="text-3xl">
-                Previous
-              </Button>
-            )}
-            {currentPage < totalPages - 1 && (
-              <Button onClick={goToNextPage} className="text-3xl">
-                Next
-              </Button>
-            )}
-          </div> */}
         </div>
       )}
       {/* Submission Status Overlay */}
